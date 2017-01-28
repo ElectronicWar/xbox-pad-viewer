@@ -121,7 +121,7 @@ for use with OBS streaming.
 							gamepadHandler.connect(gamepadsFromNavigator[i]);
 						}
 					} else if((gamepadsFromNavigator[i] === null || gamepadsFromNavigator[i] === undefined)
-					  && document.getElementById(`gp${i}`)) {
+					  && document.getElementById("gp"+i)) {
 						gamepadHandler.disconnect(i);
 					}
 				}
@@ -130,6 +130,31 @@ for use with OBS streaming.
 
 		var gamepadMapping = {
 			"Microsoft Controller (Vendor: 045e Product: 02d1)": {
+				buttons: [
+					{name:"A", type:"button"}
+					,{name:"B", type:"button"}
+					,{name:"X", type:"button"}
+					,{name:"Y", type:"button"}
+					,{name:"LB", type:"button"}
+					,{name:"RB", type:"button"}
+					,{name:"Se", type:"button"}
+					,{name:"St", type:"button"}
+					,{name:"ⓧ", type:"button"}
+					,{name:"L", type:"button thumb"}
+					,{name:"R", type:"button thumb"}
+				]
+				,axes: [
+					{name:"L", type:"thumb"}
+					,{name:"L", type:"thumb"}
+					,{name:"LT", type:"button shoulder"}
+					,{name:"R", type:"thumb"}
+					,{name:"R", type:"thumb"}
+					,{name:"RT", type:"button shoulder"}
+					,{name:"D", type:"button polar"}
+					,{name:"D", type:"button polar"}
+				]
+			}
+			,"Microsoft X-Box One pad": {
 				buttons: [
 					{name:"A", type:"button"}
 					,{name:"B", type:"button"}
@@ -193,7 +218,7 @@ for use with OBS streaming.
 
 				// create dom for a gamepad
 				var d = document.createElement("div");
-				d.setAttribute("id",`gp${gp.index}`);
+				d.setAttribute("id","gp"+gp.index);
 				d.setAttribute("class",gp.id);
 
 				// create dom for buttons
@@ -205,15 +230,15 @@ for use with OBS streaming.
 						var e = document.createElement("span");
 						if(cur.type === "button thumb") {} else {
 							e.setAttribute("class",cur.type);
-							e.innerHTML = `${cur.name}`;
+							e.innerHTML = cur.name;
 						}
 					} else {
 						var e = document.createElement("span");
 						e.setAttribute("class","button");
 						e.innerHTML = i;
 					}
-					e.style.filter = `hue-rotate(${gpConstants.pressedButtonBackgroundColorHue}deg)`;
-					e.style.transition=`opacity ${gpConstants.fadeOutDuration}s`;
+					e.style.filter = "hue-rotate("+gpConstants.pressedButtonBackgroundColorHue+"deg)";
+					e.style.transition="opacity "+gpConstants.fadeOutDuration+"s";
 					b.appendChild(e);
 					if(gpConstants.useFadeOut) { gts.buttonAdd(); }
 				}
@@ -227,18 +252,18 @@ for use with OBS streaming.
 					if(gamepadMapping[gp.id]) {
 						var cur = gamepadMapping[gp.id].axes[i];
 						if(cur.type === "thumb") {
-							if(a.getElementsByClassName(`axis ${cur.name}`).length) {
-								c.style.top = `${gpConstants.thumbSize/2}%`;
+							if(a.getElementsByClassName("axis "+cur.name).length) {
+								c.style.top = (gpConstants.thumbSize/2)+"%";
 							} else {
 								e = document.createElement("span");
-								e.setAttribute("class",`axis ${cur.name}`);
+								e.setAttribute("class","axis "+cur.name);
 								c = document.createElement("span");
-								c.style.width = `${gpConstants.thumbSize}%`;
-								c.style.height = `${gpConstants.thumbSize}%`;
-								c.style.left = `${gpConstants.thumbSize/2}%`;
-								c.style.filter = `hue-rotate(${gpConstants.pressedButtonBackgroundColorHue}deg)`;
+								c.style.width = gpConstants.thumbSize+"%";
+								c.style.height = gpConstants.thumbSize+"%";
+								c.style.left = (gpConstants.thumbSize/2)+"%";
+								c.style.filter = "hue-rotate("+gpConstants.pressedButtonBackgroundColorHue+"deg)";
 								e.appendChild(c);
-								e.style.transition=`opacity ${gpConstants.fadeOutDuration}s`;
+								e.style.transition="opacity "+gpConstants.fadeOutDuration+"s";
 								a.appendChild(e);
 								if(gpConstants.useFadeOut) { gts.axisAdd(cur.name); }
 							}
@@ -254,21 +279,21 @@ for use with OBS streaming.
 									e.innerHTML = i===6?"R":"D";
 									var e2 = e.cloneNode(false);
 									e2.innerHTML = i===6?"L":"U";
-									e2.style.filter = `hue-rotate(${gpConstants.pressedButtonBackgroundColorHue}deg)`;
-									e2.style.transition=`opacity ${gpConstants.fadeOutDuration}s`;
+									e2.style.filter = "hue-rotate("+gpConstants.pressedButtonBackgroundColorHue+"deg)";
+									e2.style.transition="opacity "+gpConstants.fadeOutDuration+"s";
 									b.appendChild(e2);
 									if(gpConstants.useFadeOut) { gts.buttonAdd(); }
 								}
 							}
-							e.style.filter = `hue-rotate(${gpConstants.pressedButtonBackgroundColorHue}deg)`;
-							e.style.transition=`opacity ${gpConstants.fadeOutDuration}s`;
+							e.style.filter = "hue-rotate("+gpConstants.pressedButtonBackgroundColorHue+"deg)";
+							e.style.transition="opacity "+gpConstants.fadeOutDuration+"s";
 							b.appendChild(e);
 							if(gpConstants.useFadeOut) { gts.buttonAdd(); }
 						}
 					} else {
 						e = document.createElement("span");
 						e.setAttribute("class","axis");
-						e.innerHTML = `${i} `;
+						e.innerHTML = i+" ";
 						a.appendChild(e);
 					}
 				}
@@ -278,7 +303,7 @@ for use with OBS streaming.
 				document.body.appendChild(d);
 			},
 			remove: function(index) {
-				var d = document.getElementById(`gp${index}`);
+				var d = document.getElementById("gp"+index);
 				document.body.removeChild(d);
 				delete gamepadTimestamps[index];
 			},
@@ -294,7 +319,7 @@ for use with OBS streaming.
 						var gts = gamepadTimestamps[gp.index];
 						gts.age();
 					}
-					var d = document.getElementById(`gp${gp.index}`);
+					var d = document.getElementById("gp"+gp.index);
 
 					var b = d.getElementsByClassName("buttons")[0];
 					for(var i=0; i<gp.buttons.length; i++) {
@@ -303,7 +328,7 @@ for use with OBS streaming.
 						var es = gp.buttons[i]; // each status of buttons
 						var val = 100*es.value;
 						if(cur.type === "button thumb") {
-							e = d.getElementsByClassName(`axis ${cur.name}`)[0].children[0];
+							e = d.getElementsByClassName("axis "+cur.name)[0].children[0];
 							if(val===100) {
 								e.style.background = "url(dot.png)";
 							} else {
@@ -316,7 +341,7 @@ for use with OBS streaming.
 							// );
 						} else {
 							e = b.children[i]; // each dom for buttons
-							e.style.backgroundSize = `100% ${val}%`;
+							e.style.backgroundSize = "100% "+val+"%";
 							if(val) {
 								e.style.color = gpConstants.pressedButtonColor;
 							} else {
@@ -338,7 +363,7 @@ for use with OBS streaming.
 							var cur = gamepadMapping[gp.id].axes[i];
 							var val = gp.axes[i];
 							if(cur.type === "thumb") {
-								a = d.getElementsByClassName(`axis ${cur.name}`)[0].children[0];
+								a = d.getElementsByClassName("axis "+cur.name)[0].children[0];
 								var thumbMargin = (100-gpConstants.thumbSize)/2;
 
 								// in Windows, axis0~4 is LeftThumbXY and RightThumbXY.
@@ -352,10 +377,10 @@ for use with OBS streaming.
 								if(linuxXpadCalibration) { i===3?i=4:i=3; } 
 								if(i%2) {
 									if(linuxXpadCalibration) { i===3?i=4:i=3; }
-									a.style.top = `${thumbMargin+thumbMargin*val}%`;
+									a.style.top = (thumbMargin+thumbMargin*val)+"%";
 								} else {
 									if(linuxXpadCalibration) { i===3?i=4:i=3; }
-									a.style.left = `${thumbMargin+thumbMargin*val}%`;
+									a.style.left = (thumbMargin+thumbMargin*val)+"%";
 								}
 								var valSerialized = 
 								Math.pow(10,2*gpConstants.axisSensitivity+2)
@@ -381,7 +406,7 @@ for use with OBS streaming.
 										} else {
 											e.style.color = "white";
 										}
-										e.style.backgroundSize = `100% ${val}%`;
+										e.style.backgroundSize = "100% "+val+"%";
 										if(gpConstants.useFadeOut) {
 											gamepadDOMs.opacityControl(
 												gts.buttonUpdate(buttonNumber, val), 
@@ -402,7 +427,7 @@ for use with OBS streaming.
 										val = Math.abs(100*val);
 										if(buttonNumber) {
 											e = b.children[buttonNumber];
-											e.style.backgroundSize = `100% ${val}%`;
+											e.style.backgroundSize = "100% "+val+"%";
 											e.style.color = gpConstants.pressedButtonColor;
 										} else {
 											e = b.children[currentMinusPolarButton];
@@ -439,7 +464,7 @@ for use with OBS streaming.
 						} else {
 							var a = d.getElementsByClassName("axis");
 							e = a[i];
-							e.innerHTML = `${i}${gp.axes[i].toFixed(2)} `;
+							e.innerHTML = ""+i+gp.axes[i].toFixed(2)+" ";
 						}
 					}
 
@@ -455,10 +480,10 @@ for use with OBS streaming.
 						status = {t:status, v:0};
 					}
 					if(isChanged || status.v) { 
-						element.style.transition=`opacity 0s`;
+						element.style.transition="opacity 0s";
 						element.style.opacity=1;
 						var si = setInterval(function(){
-							element.style.transition=`opacity ${gpConstants.fadeOutDuration}s`;
+							element.style.transition="opacity "+gpConstants.fadeOutDuration+"s";
 							clearInterval(si);
 						}, 1);
 					} else {
